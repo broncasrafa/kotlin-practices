@@ -8,5 +8,5 @@ data class BookModel(
     val title: String,
     val price: BigDecimal,
     val status: BookStatus?,
-    val customerId: Int
+    val customer: CustomerModel?
 )

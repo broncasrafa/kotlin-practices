@@ -1,11 +1,13 @@
 package com.rsfrancisco.mercadolivro.classes.dtos.request
 
-import com.rsfrancisco.mercadolivro.classes.enums.BookStatus
+import com.fasterxml.jackson.annotation.JsonAlias
 import java.math.BigDecimal
 
-class BookCreateRequest (
-    val title: String,
-    val price: BigDecimal,
-    val status: BookStatus?,
-    val customerId: Int
+data class BookCreateRequest (
+    var title: String,
+
+    var price: BigDecimal,
+
+    @JsonAlias("customer_id")
+    var customerId: Int
 )

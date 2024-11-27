@@ -19,6 +19,6 @@ fun Book.toBookModel(): BookModel {
         title = this.title,
         price = this.price,
         status = this.status,
-        customerId = this.customer!!.id
-        )
+        customer = this.customer!!.toCustomerModel()
+    )
 }

@@ -9,5 +9,5 @@ data class BookResponse(
     val title: String,
     val price: BigDecimal,
     val status: BookStatus?,
-    val customer: Customer?
+    val customer: CustomerResponse?
 )

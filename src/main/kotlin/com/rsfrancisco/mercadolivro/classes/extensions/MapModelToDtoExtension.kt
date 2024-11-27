@@ -16,7 +16,7 @@ fun BookModel.toBookResponse(): BookResponse {
         title = this.title,
         price = this.price,
         status = this.status,
-        customer = null
+        customer = this.customer!!.toCustomerResponse()
     )
 }
 fun List<BookModel>.toBookResponse(): List<BookResponse> {
