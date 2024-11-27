@@ -14,7 +14,7 @@ class CustomerService(val repository: CustomerRepository) {
             return repository.findByNameContainingIgnoreCase(name).map { it.toCustomerModel() }
         }
         return repository.findAll().map{ it.toCustomerModel() }
-        
+
 //        return if (name.isNullOrBlank()) {
 //            repository.findAll().map{ it.toCustomerModel() }
 //        } else {
