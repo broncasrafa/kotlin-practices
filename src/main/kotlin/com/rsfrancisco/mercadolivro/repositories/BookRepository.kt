@@ -8,4 +8,5 @@ interface BookRepository : JpaRepository<Book, Int> {
     fun findByStatus(status: BookStatus): List<Book>
     fun findByTitleContainingIgnoreCase(title: String): List<Book>
     fun findByStatusAndTitleContainingIgnoreCase(status: BookStatus, title: String): List<Book>
+    fun findByCustomerId(customerId: Int): List<Book>
 }

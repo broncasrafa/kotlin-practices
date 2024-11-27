@@ -2,13 +2,14 @@ package com.rsfrancisco.mercadolivro.classes.extensions
 
 import com.rsfrancisco.mercadolivro.classes.dtos.request.*
 import com.rsfrancisco.mercadolivro.classes.enums.BookStatus
+import com.rsfrancisco.mercadolivro.classes.enums.CustomerStatus
 import com.rsfrancisco.mercadolivro.classes.models.*
 
 fun CustomerCreateRequest.toCustomerModel(): CustomerModel {
-    return CustomerModel(name = this.name, email = this.email)
+    return CustomerModel(name = this.name, email = this.email, status = CustomerStatus.ATIVO)
 }
 fun CustomerUpdateRequest.toCustomerModel(): CustomerModel {
-    return CustomerModel(id = this.id, name = this.name, email = this.email)
+    return CustomerModel(id = this.id, name = this.name, email = this.email, status = CustomerStatus.ATIVO)
 }
 
 fun BookCreateRequest.toBookModel(customerModel: CustomerModel?): BookModel {

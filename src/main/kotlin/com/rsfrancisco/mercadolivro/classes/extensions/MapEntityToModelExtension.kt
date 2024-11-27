@@ -9,7 +9,8 @@ fun Customer.toCustomerModel(): CustomerModel {
     return CustomerModel(
         id = this.id,
         name = this.name,
-        email = this.email
+        email = this.email,
+        status = this.status
     )
 }
 

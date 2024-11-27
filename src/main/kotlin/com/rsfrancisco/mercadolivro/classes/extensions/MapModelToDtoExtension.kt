@@ -4,7 +4,7 @@ import com.rsfrancisco.mercadolivro.classes.dtos.response.*
 import com.rsfrancisco.mercadolivro.classes.models.*
 
 fun CustomerModel.toCustomerResponse(): CustomerResponse {
-    return CustomerResponse(id = this.id!!.toInt(), name = this.name, email = this.email)
+    return CustomerResponse(id = this.id!!.toInt(), name = this.name, email = this.email, status = this.status)
 }
 fun List<CustomerModel>.toCustomerResponse(): List<CustomerResponse> {
     return this.map { it.toCustomerResponse() }

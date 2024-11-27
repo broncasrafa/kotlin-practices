@@ -13,7 +13,8 @@ class BookService(val bookRepository: BookRepository) {
 
     fun getAll(name: String?): List<BookModel> {
         name?.let {
-            return bookRepository.findByStatusAndTitleContainingIgnoreCase(BookStatus.ATIVO, name).map { it.toBookModel() }
+            return bookRepository.findByStatusAndTitleContainingIgnoreCase(BookStatus.ATIVO, name)
+                .map { it.toBookModel() }
         }
         return bookRepository.findByStatus(BookStatus.ATIVO).map { it.toBookModel() }
     }
@@ -47,5 +48,13 @@ class BookService(val bookRepository: BookRepository) {
         var book = bookRepository.findById(id).orElseThrow()
         book.status = BookStatus.CANCELADO
         bookRepository.save(book)
+    }
+
+    fun deleteByCustomerId(customerId: Int) {
+        var books = bookRepository.findByCustomerId(customerId)
+        for(book in books) {
+            book.status = BookStatus.DELETADO
+        }
+        bookRepository.saveAll(books)
     }
 }

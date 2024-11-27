@@ -1,5 +1,6 @@
 package com.rsfrancisco.mercadolivro.services
 
+import com.rsfrancisco.mercadolivro.classes.enums.CustomerStatus
 import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerEntity
 import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerModel
 import com.rsfrancisco.mercadolivro.classes.models.CustomerModel
@@ -7,24 +8,17 @@ import com.rsfrancisco.mercadolivro.repositories.CustomerRepository
 import org.springframework.stereotype.Service
 
 @Service
-class CustomerService(val repository: CustomerRepository) {
+class CustomerService(val repository: CustomerRepository, val bookService: BookService) {
 
     fun getAll(name: String?): List<CustomerModel> {
         name?.let {
             return repository.findByNameContainingIgnoreCase(name).map { it.toCustomerModel() }
         }
         return repository.findAll().map{ it.toCustomerModel() }
-
-//        return if (name.isNullOrBlank()) {
-//            repository.findAll().map{ it.toCustomerModel() }
-//        } else {
-//            repository.findByNameContainingIgnoreCase(name).map { it.toCustomerModel() }
-//        }
     }
 
     fun getById(id: Int): CustomerModel? {
         var customer = repository.findById(id).orElseThrow()
-            //?: throw Exception("Customer with ID: '${id}' was not found")
         return customer.toCustomerModel()
     }
 
@@ -36,7 +30,7 @@ class CustomerService(val repository: CustomerRepository) {
 
     fun updateOne(model: CustomerModel, id: Int) {
         var customCustomer = repository.findById(id).orElseThrow()
-            //?: throw Exception("Customer with ID: '${id}' was not found")
+
         customCustomer.let {
             it.name = model.name
             it.email = model.email
@@ -45,7 +39,11 @@ class CustomerService(val repository: CustomerRepository) {
     }
 
     fun deleteOne(id: Int) {
-        var customCustomer = repository.findById(id) ?: throw Exception("Customer with ID: '${id}' was not found")
-        repository.delete(customCustomer.get())
+        var customCustomer = repository.findById(id).orElseThrow()
+        customCustomer.status = CustomerStatus.INATIVO
+
+        var books = bookService.deleteByCustomerId(id)
+
+        repository.save(customCustomer)
     }
 }

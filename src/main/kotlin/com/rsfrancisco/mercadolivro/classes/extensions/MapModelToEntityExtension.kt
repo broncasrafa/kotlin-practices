@@ -5,9 +5,10 @@ import com.rsfrancisco.mercadolivro.classes.models.*
 
 fun CustomerModel.toCustomerEntity(): Customer {
     return Customer(
-        id = this.id ?: 0, //throw IllegalArgumentException("CustomerModel.id não pode ser nulo"),
+        id = this.id ?: 0,
         name = this.name,
-        email = this.email
+        email = this.email,
+        status = this.status
     )
 }
 
