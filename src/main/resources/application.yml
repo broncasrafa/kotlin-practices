@@ -14,3 +14,7 @@ spring:
         format_sql: true
   jackson:
     default-property-inclusion: non_null
+
+springdoc:
+  swagger-ui:
+    doc-expansion: none
