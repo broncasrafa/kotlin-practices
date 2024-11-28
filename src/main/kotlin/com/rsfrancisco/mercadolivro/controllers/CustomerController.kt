@@ -5,6 +5,7 @@ import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerUpdateRequest
 import com.rsfrancisco.mercadolivro.classes.dtos.response.BookResponse
 import com.rsfrancisco.mercadolivro.classes.dtos.response.CustomerResponse
 import com.rsfrancisco.mercadolivro.services.CustomerService
+import jakarta.validation.Valid
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -33,13 +34,13 @@ class CustomerController(val customerService: CustomerService)
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCustomer(@RequestBody request: CustomerCreateRequest): CustomerResponse {
+    fun createCustomer(@RequestBody @Valid request: CustomerCreateRequest): CustomerResponse {
         return customerService.insertOne(request)
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun updateCustomer(@RequestBody request: CustomerUpdateRequest, @PathVariable id: Int) {
+    fun updateCustomer(@RequestBody @Valid request: CustomerUpdateRequest, @PathVariable id: Int) {
         customerService.updateOne(request, id)
     }
 
