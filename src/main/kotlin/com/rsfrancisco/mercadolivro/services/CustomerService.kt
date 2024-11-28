@@ -1,8 +1,12 @@
 package com.rsfrancisco.mercadolivro.services
 
+import com.rsfrancisco.mercadolivro.classes.dtos.response.BookResponse
 import com.rsfrancisco.mercadolivro.classes.enums.CustomerStatus
+import com.rsfrancisco.mercadolivro.classes.extensions.toBookModel
+import com.rsfrancisco.mercadolivro.classes.extensions.toBookResponse
 import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerEntity
 import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerModel
+import com.rsfrancisco.mercadolivro.classes.models.BookModel
 import com.rsfrancisco.mercadolivro.classes.models.CustomerModel
 import com.rsfrancisco.mercadolivro.repositories.CustomerRepository
 import org.springframework.stereotype.Service
@@ -45,5 +49,9 @@ class CustomerService(val repository: CustomerRepository, val bookService: BookS
         var books = bookService.deleteByCustomerId(id)
 
         repository.save(customCustomer)
+    }
+
+    fun getCustomerBooks(customerId: Int): List<BookModel> {
+        return bookService.getByCustomerId(customerId)
     }
 }

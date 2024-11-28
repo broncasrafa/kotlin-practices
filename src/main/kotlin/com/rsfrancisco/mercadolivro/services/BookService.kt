@@ -24,6 +24,10 @@ class BookService(val bookRepository: BookRepository) {
         return book.toBookModel()
     }
 
+    fun getByCustomerId(customerId: Int): List<BookModel> {
+        return bookRepository.findByCustomerId(customerId).map { it.toBookModel() }
+    }
+
 
     fun insertOne(model: BookModel): BookModel {
         var book = model.toBookEntity()

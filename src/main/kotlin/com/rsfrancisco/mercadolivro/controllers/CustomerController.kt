@@ -2,7 +2,9 @@ package com.rsfrancisco.mercadolivro.controllers
 
 import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerCreateRequest
 import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerUpdateRequest
+import com.rsfrancisco.mercadolivro.classes.dtos.response.BookResponse
 import com.rsfrancisco.mercadolivro.classes.dtos.response.CustomerResponse
+import com.rsfrancisco.mercadolivro.classes.extensions.toBookResponse
 import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerModel
 import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerResponse
 import com.rsfrancisco.mercadolivro.services.CustomerService
@@ -26,6 +28,14 @@ class CustomerController(val customerService: CustomerService)
         val response = customerService.getById(id)
         return response!!.toCustomerResponse()
     }
+
+
+    @GetMapping("/{id}/books")
+    fun getCustomerBooksById(@PathVariable id: Int): List<BookResponse> {
+        val response = customerService.getCustomerBooks(id)
+        return response.toBookResponse()
+    }
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
