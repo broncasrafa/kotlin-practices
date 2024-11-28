@@ -3,6 +3,7 @@ package com.rsfrancisco.mercadolivro.services
 import com.rsfrancisco.mercadolivro.classes.dtos.response.BookResponse
 import com.rsfrancisco.mercadolivro.classes.entities.Book
 import com.rsfrancisco.mercadolivro.classes.enums.BookStatus
+import com.rsfrancisco.mercadolivro.classes.errorHandlers.exceptions.BookNotFoundException
 import com.rsfrancisco.mercadolivro.classes.mappers.toBookResponse
 import com.rsfrancisco.mercadolivro.repositories.BookRepository
 import jakarta.transaction.Transactional
@@ -23,7 +24,7 @@ class BookService(val bookRepository: BookRepository) {
 
     fun getById(id: Int): BookResponse {
         return bookRepository.findById(id)
-                                .orElseThrow { Exception("Book with ID: '${id}' was not found") }
+                                .orElseThrow { BookNotFoundException(id) }
                              .toBookResponse()
     }
 
@@ -39,7 +40,7 @@ class BookService(val bookRepository: BookRepository) {
 
     fun updateOne(model: Book, id: Int) {
         var currentBook = bookRepository.findById(id)
-                                            .orElseThrow { Exception("Book with ID: '${id}' was not found") }
+                                            .orElseThrow { BookNotFoundException(id) }
 
         currentBook?.let {
             it.title = model.title ?: currentBook.title
@@ -50,7 +51,7 @@ class BookService(val bookRepository: BookRepository) {
     }
 
     fun deleteOne(id: Int) {
-        var book = bookRepository.findById(id).orElseThrow { Exception("Book with ID: '${id}' was not found") }
+        var book = bookRepository.findById(id).orElseThrow { BookNotFoundException(id) }
         book.status = BookStatus.CANCELADO
         bookRepository.save(book)
     }

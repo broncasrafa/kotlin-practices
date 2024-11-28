@@ -1,6 +1,7 @@
 package com.rsfrancisco.mercadolivro.classes.entities
 
 import com.rsfrancisco.mercadolivro.classes.enums.BookStatus
+import com.rsfrancisco.mercadolivro.classes.errorHandlers.exceptions.BookChangeStatusErrorException
 import jakarta.persistence.*
 import java.math.BigDecimal
 
@@ -25,7 +26,7 @@ data class Book (
     var status: BookStatus? = null
         set(value) {
             if (field == BookStatus.DELETADO || field == BookStatus.CANCELADO)
-                throw Exception("Não é possível alterar um livro com o status ${field}")
+                throw BookChangeStatusErrorException("Não é possível alterar um livro com o status '$field'")
 
             field = value
         }

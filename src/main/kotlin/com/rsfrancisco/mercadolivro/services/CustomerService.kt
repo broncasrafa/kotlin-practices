@@ -5,6 +5,7 @@ import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerUpdateRequest
 import com.rsfrancisco.mercadolivro.classes.dtos.response.BookResponse
 import com.rsfrancisco.mercadolivro.classes.dtos.response.CustomerResponse
 import com.rsfrancisco.mercadolivro.classes.enums.CustomerStatus
+import com.rsfrancisco.mercadolivro.classes.errorHandlers.exceptions.CustomerNotFoundException
 import com.rsfrancisco.mercadolivro.classes.mappers.toCustomerEntity
 import com.rsfrancisco.mercadolivro.classes.mappers.toCustomerResponse
 import com.rsfrancisco.mercadolivro.repositories.CustomerRepository
@@ -25,7 +26,8 @@ class CustomerService(val repository: CustomerRepository, val bookService: BookS
 
     @Transactional
     fun getById(id: Int): CustomerResponse? {
-        var customer = repository.findById(id).orElseThrow { Exception("Customer with ID: '${id}' was not found") }
+        var customer = repository.findById(id)
+                                    .orElseThrow { CustomerNotFoundException(id) }
         return customer.toCustomerResponse()
     }
 
@@ -35,7 +37,8 @@ class CustomerService(val repository: CustomerRepository, val bookService: BookS
     }
 
     fun updateOne(model: CustomerUpdateRequest, id: Int) {
-        var customCustomer = repository.findById(id).orElseThrow { Exception("Customer with ID: '${id}' was not found") }
+        var customCustomer = repository.findById(id)
+                                            .orElseThrow { CustomerNotFoundException(id) }
 
         customCustomer.let {
             it.name = model.name
@@ -45,10 +48,12 @@ class CustomerService(val repository: CustomerRepository, val bookService: BookS
     }
 
     fun deleteOne(id: Int) {
-        var customCustomer = repository.findById(id).orElseThrow { Exception("Customer with ID: '${id}' was not found") }
+        var customCustomer = repository.findById(id)
+                                            .orElseThrow { CustomerNotFoundException(id) }
+
         customCustomer.status = CustomerStatus.INATIVO
 
-        var books = bookService.deleteByCustomerId(id)
+        bookService.deleteByCustomerId(id)
 
         repository.save(customCustomer)
     }
