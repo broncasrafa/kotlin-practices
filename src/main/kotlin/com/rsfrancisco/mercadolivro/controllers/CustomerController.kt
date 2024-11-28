@@ -4,9 +4,6 @@ import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerCreateRequest
 import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerUpdateRequest
 import com.rsfrancisco.mercadolivro.classes.dtos.response.BookResponse
 import com.rsfrancisco.mercadolivro.classes.dtos.response.CustomerResponse
-import com.rsfrancisco.mercadolivro.classes.extensions.toBookResponse
-import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerModel
-import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerResponse
 import com.rsfrancisco.mercadolivro.services.CustomerService
 
 import org.springframework.http.HttpStatus
@@ -19,35 +16,31 @@ class CustomerController(val customerService: CustomerService)
 {
     @GetMapping
     fun getAllCustomers(@RequestParam name: String?): List<CustomerResponse> {
-        val response = customerService.getAll(name)
-        return response.toCustomerResponse()
+        return customerService.getAll(name)
     }
 
     @GetMapping("/{id}")
-    fun getCustomerById(@PathVariable id: Int): CustomerResponse {
-        val response = customerService.getById(id)
-        return response!!.toCustomerResponse()
+    fun getCustomerById(@PathVariable id: Int): CustomerResponse? {
+        return customerService.getById(id)
     }
 
 
     @GetMapping("/{id}/books")
     fun getCustomerBooksById(@PathVariable id: Int): List<BookResponse> {
-        val response = customerService.getCustomerBooks(id)
-        return response.toBookResponse()
+        return customerService.getCustomerBooks(id)
     }
 
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createCustomer(@RequestBody request: CustomerCreateRequest): CustomerResponse {
-        val response = customerService.insertOne(request.toCustomerModel())
-        return response.toCustomerResponse()
+        return customerService.insertOne(request)
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun updateCustomer(@RequestBody request: CustomerUpdateRequest, @PathVariable id: Int) {
-        customerService.updateOne(request.toCustomerModel(), id)
+        customerService.updateOne(request, id)
     }
 
     @DeleteMapping("/{id}")

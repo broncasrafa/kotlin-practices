@@ -5,6 +5,6 @@ import java.math.BigDecimal
 
 data class BookUpdateRequest (
     var id: Int,
-    val title: String,
-    val price: BigDecimal
+    val title: String?,
+    val price: BigDecimal?
 )

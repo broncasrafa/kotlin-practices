@@ -1,39 +1,41 @@
 package com.rsfrancisco.mercadolivro.services
 
+import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerCreateRequest
+import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerUpdateRequest
 import com.rsfrancisco.mercadolivro.classes.dtos.response.BookResponse
+import com.rsfrancisco.mercadolivro.classes.dtos.response.CustomerResponse
 import com.rsfrancisco.mercadolivro.classes.enums.CustomerStatus
-import com.rsfrancisco.mercadolivro.classes.extensions.toBookModel
-import com.rsfrancisco.mercadolivro.classes.extensions.toBookResponse
-import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerEntity
-import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerModel
-import com.rsfrancisco.mercadolivro.classes.models.BookModel
-import com.rsfrancisco.mercadolivro.classes.models.CustomerModel
+import com.rsfrancisco.mercadolivro.classes.mappers.toCustomerEntity
+import com.rsfrancisco.mercadolivro.classes.mappers.toCustomerResponse
 import com.rsfrancisco.mercadolivro.repositories.CustomerRepository
+
+import jakarta.transaction.Transactional
+
 import org.springframework.stereotype.Service
 
 @Service
 class CustomerService(val repository: CustomerRepository, val bookService: BookService) {
 
-    fun getAll(name: String?): List<CustomerModel> {
+    fun getAll(name: String?): List<CustomerResponse> {
         name?.let {
-            return repository.findByNameContainingIgnoreCase(name).map { it.toCustomerModel() }
+            return repository.findByNameContainingIgnoreCase(name).map { it.toCustomerResponse() }
         }
-        return repository.findAll().map{ it.toCustomerModel() }
+        return repository.findAll().map{ it.toCustomerResponse() }
     }
 
-    fun getById(id: Int): CustomerModel? {
-        var customer = repository.findById(id).orElseThrow()
-        return customer.toCustomerModel()
+    @Transactional
+    fun getById(id: Int): CustomerResponse? {
+        var customer = repository.findById(id).orElseThrow { Exception("Customer with ID: '${id}' was not found") }
+        return customer.toCustomerResponse()
     }
 
-    fun insertOne(model: CustomerModel): CustomerModel {
-        val customer = model.toCustomerEntity()
-        val newCustomer = repository.save(customer)
-        return newCustomer.toCustomerModel()
+    fun insertOne(request: CustomerCreateRequest): CustomerResponse {
+        val customer = request.toCustomerEntity()
+        return repository.save(customer).toCustomerResponse()
     }
 
-    fun updateOne(model: CustomerModel, id: Int) {
-        var customCustomer = repository.findById(id).orElseThrow()
+    fun updateOne(model: CustomerUpdateRequest, id: Int) {
+        var customCustomer = repository.findById(id).orElseThrow { Exception("Customer with ID: '${id}' was not found") }
 
         customCustomer.let {
             it.name = model.name
@@ -43,7 +45,7 @@ class CustomerService(val repository: CustomerRepository, val bookService: BookS
     }
 
     fun deleteOne(id: Int) {
-        var customCustomer = repository.findById(id).orElseThrow()
+        var customCustomer = repository.findById(id).orElseThrow { Exception("Customer with ID: '${id}' was not found") }
         customCustomer.status = CustomerStatus.INATIVO
 
         var books = bookService.deleteByCustomerId(id)
@@ -51,7 +53,7 @@ class CustomerService(val repository: CustomerRepository, val bookService: BookS
         repository.save(customCustomer)
     }
 
-    fun getCustomerBooks(customerId: Int): List<BookModel> {
+    fun getCustomerBooks(customerId: Int): List<BookResponse> {
         return bookService.getByCustomerId(customerId)
     }
 }

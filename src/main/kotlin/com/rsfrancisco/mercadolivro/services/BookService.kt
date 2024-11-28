@@ -1,44 +1,45 @@
 package com.rsfrancisco.mercadolivro.services
 
+import com.rsfrancisco.mercadolivro.classes.dtos.response.BookResponse
+import com.rsfrancisco.mercadolivro.classes.entities.Book
 import com.rsfrancisco.mercadolivro.classes.enums.BookStatus
-import com.rsfrancisco.mercadolivro.classes.extensions.toBookEntity
-import com.rsfrancisco.mercadolivro.classes.extensions.toBookModel
-import com.rsfrancisco.mercadolivro.classes.extensions.toCustomerEntity
-import com.rsfrancisco.mercadolivro.classes.models.BookModel
+import com.rsfrancisco.mercadolivro.classes.mappers.toBookResponse
 import com.rsfrancisco.mercadolivro.repositories.BookRepository
+import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
 class BookService(val bookRepository: BookRepository) {
 
-    fun getAll(name: String?): List<BookModel> {
+    fun getAll(name: String?, pageable: Pageable?): Page<BookResponse> {
         name?.let {
-            return bookRepository.findByStatusAndTitleContainingIgnoreCase(BookStatus.ATIVO, name)
-                .map { it.toBookModel() }
+            return bookRepository.findByStatusAndTitleContainingIgnoreCase(BookStatus.ATIVO, name, pageable)
+                .map { it.toBookResponse() }
         }
-        return bookRepository.findByStatus(BookStatus.ATIVO).map { it.toBookModel() }
+        return bookRepository.findByStatus(BookStatus.ATIVO, pageable).map { it.toBookResponse() }
     }
 
-    fun getById(id: Int): BookModel {
-        var book = bookRepository.findById(id).orElseThrow()
-        return book.toBookModel()
+    fun getById(id: Int): BookResponse {
+        return bookRepository.findById(id)
+                                .orElseThrow { Exception("Book with ID: '${id}' was not found") }
+                             .toBookResponse()
     }
 
-    fun getByCustomerId(customerId: Int): List<BookModel> {
-        return bookRepository.findByCustomerId(customerId).map { it.toBookModel() }
+    fun getByCustomerId(customerId: Int): List<BookResponse> {
+        return bookRepository.findByCustomerId(customerId).map { it.toBookResponse() }
     }
 
 
-    fun insertOne(model: BookModel): BookModel {
-        var book = model.toBookEntity()
-        book.customer = model.customer!!.toCustomerEntity()
-
-        var newBook = bookRepository.save(book)
-        return newBook.toBookModel()
+    @Transactional
+    fun insertOne(entity: Book) {
+        bookRepository.save(entity)
     }
 
-    fun updateOne(model: BookModel, id: Int) {
-        var currentBook = bookRepository.findById(id).orElseThrow()
+    fun updateOne(model: Book, id: Int) {
+        var currentBook = bookRepository.findById(id)
+                                            .orElseThrow { Exception("Book with ID: '${id}' was not found") }
 
         currentBook?.let {
             it.title = model.title ?: currentBook.title
@@ -49,7 +50,7 @@ class BookService(val bookRepository: BookRepository) {
     }
 
     fun deleteOne(id: Int) {
-        var book = bookRepository.findById(id).orElseThrow()
+        var book = bookRepository.findById(id).orElseThrow { Exception("Book with ID: '${id}' was not found") }
         book.status = BookStatus.CANCELADO
         bookRepository.save(book)
     }
