@@ -61,4 +61,8 @@ class CustomerService(val repository: CustomerRepository, val bookService: BookS
     fun getCustomerBooks(customerId: Int): List<BookResponse> {
         return bookService.getByCustomerId(customerId)
     }
+
+    fun isEmailAvailable(email: String): Boolean {
+        return !repository.existsByEmail(email)
+    }
 }
