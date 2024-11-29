@@ -5,6 +5,7 @@ import com.rsfrancisco.mercadolivro.services.BookService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 
 @Component
@@ -13,6 +14,7 @@ class ChangeBookStatusListener(
     private val bookService: BookService
 ) {
 
+    @Async
     @EventListener
     fun listen(purchaseEvent: PurchaseEvent) {
         logger.info("[Evento recebido] Atualizar status dos livros vendidos: PurchaseID: [${purchaseEvent.purchase.id}]")
