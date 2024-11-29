@@ -20,7 +20,7 @@ data class Purchase (
         name="purchase_book",
         joinColumns = [JoinColumn(name="purchase_id")],
         inverseJoinColumns = [JoinColumn(name="book_id")])
-    val books: List<Book>,
+    val books: MutableList<Book>,
 
     @Column(name="price", nullable = false)
     val price: BigDecimal,
