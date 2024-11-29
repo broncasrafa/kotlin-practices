@@ -7,7 +7,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -18,3 +18,8 @@ spring:
 springdoc:
   swagger-ui:
     doc-expansion: none
+
+logging:
+  level:
+    root: info
+    com.rsfrancisco.mercadolivro: debug
