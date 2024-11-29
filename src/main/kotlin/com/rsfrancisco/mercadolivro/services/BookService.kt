@@ -72,4 +72,8 @@ class BookService(val bookRepository: BookRepository) {
         books.map { it.status = BookStatus.VENDIDO}
         bookRepository.saveAll(books)
     }
+
+    fun getInactiveBookIds(bookIds: Set<Int>): List<Book> {
+        return getAllByIds(bookIds).filter { it.status != BookStatus.ATIVO }
+    }
 }
