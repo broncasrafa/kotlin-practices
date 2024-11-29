@@ -3,6 +3,7 @@ package com.rsfrancisco.mercadolivro.classes.mappers
 import com.rsfrancisco.mercadolivro.classes.dtos.request.BookCreateRequest
 import com.rsfrancisco.mercadolivro.classes.dtos.request.BookUpdateRequest
 import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerCreateRequest
+import com.rsfrancisco.mercadolivro.classes.dtos.response.BookResponse
 import com.rsfrancisco.mercadolivro.classes.dtos.response.CustomerResponse
 import com.rsfrancisco.mercadolivro.classes.entities.Book
 import com.rsfrancisco.mercadolivro.classes.entities.Customer
@@ -43,4 +44,16 @@ fun BookUpdateRequest.toBookEntity(): Book {
         status = BookStatus.ATIVO,
         customer = null
     )
+}
+fun BookResponse.toBookEntity(): Book {
+    return Book(
+        id = this.id,
+        title = this.title!!,
+        price = this.price!!,
+        status = BookStatus.ATIVO,
+        customer = null
+    )
+}
+fun List<BookResponse>.toBookEntity(): List<Book>{
+    return this.map { it.toBookEntity() }
 }
