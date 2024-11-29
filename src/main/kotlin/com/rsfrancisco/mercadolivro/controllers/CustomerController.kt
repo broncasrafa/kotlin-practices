@@ -4,7 +4,9 @@ import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerCreateRequest
 import com.rsfrancisco.mercadolivro.classes.dtos.request.CustomerUpdateRequest
 import com.rsfrancisco.mercadolivro.classes.dtos.response.BookResponse
 import com.rsfrancisco.mercadolivro.classes.dtos.response.CustomerResponse
+import com.rsfrancisco.mercadolivro.classes.dtos.response.PurchaseResponse
 import com.rsfrancisco.mercadolivro.services.CustomerService
+import com.rsfrancisco.mercadolivro.services.PurchaseService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("customers")
 @Tag(name = "Customers", description = "Customers related endpoints")
-class CustomerController(val customerService: CustomerService)
+class CustomerController(
+    val customerService: CustomerService,
+    private val purchaseService: PurchaseService)
 {
 
     @Operation(summary = "Get the list of customers", description = "This endpoint returns the list of clients.")
@@ -38,6 +42,14 @@ class CustomerController(val customerService: CustomerService)
     fun getCustomerBooksById(@Parameter(description = "ID of the customer who needs to have the books fetched") @PathVariable id: Int): List<BookResponse> {
         return customerService.getCustomerBooks(id)
     }
+
+
+    @Operation(summary = "Get the list of customer purchases by the specified customer ID", description = "This endpoint returns the list of customer purchases by the specified customer ID.")
+    @GetMapping("/{id}/purchases")
+    fun getCustomerPurchasesById(@Parameter(description = "ID of the customer who needs to have the purchases fetched") @PathVariable id: Int): List<PurchaseResponse> {
+        return purchaseService.getCustomerPurchases(id)
+    }
+
 
 
     @Operation(summary = "Add a new customer", description = "This endpoint create a new customer.")
